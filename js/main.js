@@ -33,15 +33,19 @@ class Calendar {
         // Clear grid
         this.calGrid.innerHTML = '';
 
+        
         // Add headers
         this.calGrid.appendChild(this.createHeader('Weekly Tasks'));
         ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
             this.calGrid.appendChild(this.createHeader(day));
         });
-
+        
         // Add calendar cells
         let dayCount = 1;
+        
         const totalWeeks = Math.ceil((firstDay + lastDate) / 7);
+        
+        this.calGrid.style.gridTemplateRows = `auto repeat(${totalWeeks}, minmax(2rem, 1fr))`
 
         for (let week = 0; week < totalWeeks; week++) {
             // Add weekly task cell

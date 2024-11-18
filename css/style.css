@@ -12,7 +12,8 @@ body {
 
 .calendar {
     width: 100%;
-    height: calc(100vh - 2rem); /* Account for body padding */
+    /* height: calc(100vh - 2rem); */
+    height: 100vh;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -27,11 +28,12 @@ body {
 }
 
 .calendar-grid {
-    display: grid;
     flex: 1;
+    display: grid;
     grid-template-columns: 1fr repeat(7, 1fr);
-    grid-template-rows: auto repeat(6, minmax(6rem, 1fr));
+    grid-template-rows: auto repeat(6, minmax(2rem, 1fr));
     gap: .2rem;
+    padding: .5rem;
     background: #ddd;
     overflow: auto;
 }
@@ -49,20 +51,22 @@ body {
 
 .calendar-day {
     background: white;
-    min-height: 6rem;
     padding: 0.5rem;
     position: relative;
+    margin: 0;
+    border: none;
+    height: 100%;
 }
 
 .weekly-task-cell {
     background: white;
-    min-height: 6rem;
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    height: 100%;
 }
 
 .date-number {

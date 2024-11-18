@@ -1,11 +1,17 @@
-  body{
+  *{
     font-size: 62.5%;
     font-size: 1.2rem;
     outline: 1px solid black;
   }
+
+  body{
+    height: 100%;
+    outline: none;
+  }
   
   .calendar {
     max-width: 95%;
+    max-height: 10%;
     margin: 0 auto;
   }
   
@@ -18,9 +24,10 @@
   
   .calendar-grid {
     display: grid;
+    max-height: 80%;
     grid-template-columns: 200px repeat(7, 1fr);
     grid-template-rows: auto repeat(6, 1fr);
-    gap: 1px;  /* Reduced gap to make grid tighter */
+    gap: 10px;
     background: #ddd;
 }
   
@@ -31,17 +38,21 @@
     text-align: center;
   }
   
-  /* Add more styles for the actual calendar days */
   .calendar-day {
     background: white;
-    min-height: 100px;
+    height: 5rem;
+    min-height: 1%;
+    max-height: 80%;
     padding: .8rem;
   }
 
   .weekly-task-cell,
   .calendar-day {
-    background: white;
-    min-height: 10rem;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.247);
+    height: 6rem;
+    max-height: 100%;
+    width: 100%;
     padding: 0.5rem;
     border: 1px solid #ddd;
   }

@@ -1,62 +1,79 @@
-class Calendar{
+class Calendar {
     constructor(date = new Date()) {
-        this.currentDate = date
+        this.currentDate = date;
         this.calGrid = document.querySelector('.calendar-grid');
-        this.year = this.currentDate.getFullYear();
-        this.month = this.currentDate.getMonth();
-
-        this.firstOfMonth = new Date(this.year, this.month, 1).getDay();
-
-        this.lastOfMonth = new Date(this.year, this.month + 1, 0).getDate();
-
-        this.renderWeeks()
+        this.monthYearSpan = document.querySelector('.month-year');
+        this.setupNavigation();
+        this.render();
     }
 
-    renderWeeks(){
-        
-        // remove any preloaded headers
-        const headers = this.calGrid.querySelectorAll('.day-header, .task-column');
+    setupNavigation() {
+        document.querySelector('.prev-month').addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+            this.render();
+        });
+
+        document.querySelector('.next-month').addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+            this.render();
+        });
+    }
+
+    render() {
+        const year = this.currentDate.getFullYear();
+        const month = this.currentDate.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+
+        // Update month/year display
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
+        this.monthYearSpan.textContent = `${monthNames[month]} ${year}`;
+
+        // Clear grid
         this.calGrid.innerHTML = '';
 
+        // Add headers
+        this.calGrid.appendChild(this.createHeader('Weekly Tasks'));
+        ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+            this.calGrid.appendChild(this.createHeader(day));
+        });
 
-        // put in new headers
-        const taskHeader = document.createElement('div');
-        taskHeader.classList.add('task-column');
-        taskHeader.textContent = 'Weekly Tasks';
-        this.calGrid.appendChild(taskHeader);
-
-
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        days.forEach(day => {
-            const dayHeader = document.createElement('div');
-            dayHeader.classList.add('day-header');
-            dayHeader.textContent = day;
-            this.calGrid.appendChild(dayHeader);
-        })
-
+        // Add calendar cells
         let dayCount = 1;
+        const totalWeeks = Math.ceil((firstDay + lastDate) / 7);
 
-        // add weeks
-        for (let week = 0; week < 6; week++) {
-            const weeklyTasks = document.createElement('div');
-            weeklyTasks.classList.add('task-task-cell');
-            weeklyTasks.textContent = `Week ${week + 1}`;
-            this.calGrid.appendChild(weeklyTasks);
+        for (let week = 0; week < totalWeeks; week++) {
+            // Add weekly task cell
+            const weeklyTask = document.createElement('div');
+            weeklyTask.className = 'weekly-task-cell';
+            weeklyTask.textContent = `Week ${week + 1}`;
+            this.calGrid.appendChild(weeklyTask);
 
-            // add days to each week
+            // Add days
             for (let day = 0; day < 7; day++) {
                 const dayCell = document.createElement('div');
-                dayCell.classList.add('calendar-day');
-                
-                if (week === 0 && day >= this.firstOfMonth || 
-                    week > 0 && dayCount <= this.lastOfMonth){
-                        dayCell.textContent = dayCount;
-                        dayCount++
+                dayCell.className = 'calendar-day';
+
+                if ((week === 0 && day >= firstDay) || (dayCount <= lastDate)) {
+                    const dateNumber = document.createElement('span');
+                    dateNumber.className = 'date-number';
+                    dateNumber.textContent = dayCount;
+                    dayCell.appendChild(dateNumber);
+                    dayCount++;
                 }
+
                 this.calGrid.appendChild(dayCell);
             }
         }
     }
+
+    createHeader(text) {
+        const header = document.createElement('div');
+        header.className = text === 'Weekly Tasks' ? 'task-column' : 'day-header';
+        header.textContent = text;
+        return header;
+    }
 }
 
-const calendar = new Calendar()
+const calendar = new Calendar();

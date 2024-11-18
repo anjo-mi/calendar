@@ -55,7 +55,7 @@ class Calendar {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'calendar-day';
 
-                if ((week === 0 && day >= firstDay) || (dayCount <= lastDate)) {
+                if ((week === 0 && day >= firstDay) || (week > 0 &&dayCount <= lastDate)) {
                     const dateNumber = document.createElement('span');
                     dateNumber.className = 'date-number';
                     dateNumber.textContent = dayCount;

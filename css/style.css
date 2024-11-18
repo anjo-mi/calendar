@@ -1,5 +1,6 @@
   body{
     font-size: 62.5%;
+    font-size: 1.2rem;
     outline: 1px solid black;
   }
   
@@ -18,9 +19,10 @@
   .calendar-grid {
     display: grid;
     grid-template-columns: 200px repeat(7, 1fr);
-    gap: 1.6rem;
+    grid-template-rows: auto repeat(6, 1fr);
+    gap: 1px;  /* Reduced gap to make grid tighter */
     background: #ddd;
-  }
+}
   
   .task-column,
   .day-header {
@@ -34,4 +36,19 @@
     background: white;
     min-height: 100px;
     padding: .8rem;
+  }
+
+  .weekly-task-cell,
+  .calendar-day {
+    background: white;
+    min-height: 10rem;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+  }
+
+
+  .task-column,
+  .day-header {
+    background: #f5f5f5;
+    font-weight: bold;
   }

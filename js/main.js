@@ -22,7 +22,8 @@ class Calendar {
     render() {
         const year = this.currentDate.getFullYear();
         const month = this.currentDate.getMonth();
-        const firstDay = new Date(year, month, 1).getDay();
+        let firstDay = new Date(year, month, 1).getDay();
+        firstDay = firstDay === 0 ? 6 : firstDay - 1;
         const lastDate = new Date(year, month + 1, 0).getDate();
 
         // Update month/year display
@@ -36,7 +37,7 @@ class Calendar {
         
         // Add headers
         this.calGrid.appendChild(this.createHeader('Weekly Tasks'));
-        ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(day => {
             this.calGrid.appendChild(this.createHeader(day));
         });
         

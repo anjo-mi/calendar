@@ -11,8 +11,8 @@ class Task{
 class Day{
     constructor(date){
         this.date = date;
-        this.tasks = new Map(); // tasks are accessed in map object
-        this.element = null; // empty object when no tasks are present
+        this.tasks = new Map(); // stores daily tasks, with id as key
+        this.element = null; // references DOM element, null when not rendered
     }
 
     addTask(task){
@@ -154,71 +154,87 @@ class Calendar {
         // if there are only 5 weeks elapsed in the given month, dont show a 6th
         const totalWeeks = Math.ceil((firstDay + lastDate) / 7);
         for (let week = 0; week < totalWeeks; week++) {
+            // multiply week start by 7 to increment weeks, add one since its 0-indexed, subtract first day's index
             const weekStart = new Date(year, month, (week * 7) + 1 - firstDay);
-            console.log(weekStart);
+            // create a week key for each start of week
             const weekKey = this.getWeekKey(weekStart);
 
             // create and/or retrieve week
             if (!this.weeks.has(weekKey)){
                 this.weeks.set(weekKey, new Week(weekStart));
             }
+            // get the key from each specific week
             const weekObj = this.weeks.get(weekKey);
             
 
             // create weekly task cells
             const weeklyTask = document.createElement('div');
             weeklyTask.classList.add('weekly-task-cell');
+            // add weekly tasks to each specific week
             weekObj.element = weeklyTask;
-            weekObj.updateDisplay();
+            weekObj.updateDisplay(); // update the display
+            // put the weekly tasks on the grid
             this.calGrid.appendChild(weeklyTask);
             
             
-            // Add days
+            // for each week, add 7 days
             for (let day = 0; day < 7; day++) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'calendar-day';
 
+
+                // first week: only give days after month has started
+                // subsequent weeks: only show days before end of month
                 if ((week === 0 && day >= firstDay) || (week > 0 &&dayCount <= lastDate)) {
+                    // create a new date for each day
                     const currentDay = new Date(year,month, dayCount);
+                    // get the key of each day
                     const dayKey = this.getDayKey(currentDay);
 
-                    // create and/or retrieve days
+                    // if the days inside the week object dont already have a key, make it
                     if(!weekObj.days.has(dayKey)){
                         weekObj.days.set(dayKey, new Day(currentDay));
 
                     }
+                    // get each day object
                     const dayObj = weekObj.days.get(dayKey);
 
-
+                    // give each dayCell the correct number
                     const dateNumber = document.createElement('span');
                     dateNumber.className = 'date-number';
                     dateNumber.textContent = dayCount;
                     dayCell.appendChild(dateNumber);
 
+
+                    // add day cell's tasks to day obj and update display
                     dayObj.element = dayCell;
                     dayObj.updateDisplay();
-
+                    
+                    // incrememnt day for next loop thru days
                     dayCount++;
                 }
-
+                // add the day cells to the grid
                 this.calGrid.appendChild(dayCell);
             }
         }
     }
 
     addDayTask(date, task){
+        // get proper keys
         const dayKey = this.getDayKey(date);
         const weekKey = this.getWeekKey(date);
         const week = this.weeks.get(weekKey);
-
+        // if the week exists and has days inside it, get the key for the day and add the task
         if (week && week.days.has(dayKey)){
             week.days.get(dayKey).addTask(task);
         }
     }
 
     addWeekTask(date, task){
+        // get proper keys
         const weekKey = this.getWeekKey(date);
         const week = this.weeks.get(weekKey);
+        // if the week (key) exists, add the task
         if (week) week.addTask(task);
     }
 

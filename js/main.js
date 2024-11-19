@@ -169,7 +169,7 @@ class Calendar {
 
             // create weekly task cells
             const weeklyTask = document.createElement('div');
-            weeklyTask.classList.add('weekly-task-cell');
+            weeklyTask.classList.add('weekly-task-cell', week);
             // add weekly tasks to each specific week
             weekObj.element = weeklyTask;
             weekObj.updateDisplay(); // update the display
@@ -180,7 +180,7 @@ class Calendar {
             // for each week, add 7 days
             for (let day = 0; day < 7; day++) {
                 const dayCell = document.createElement('div');
-                dayCell.className = 'calendar-day';
+                dayCell.classList.add('calendar-day', week, dayCount);
 
 
                 // first week: only give days after month has started
@@ -199,9 +199,9 @@ class Calendar {
                     // get each day object
                     const dayObj = weekObj.days.get(dayKey);
 
-                    // give each dayCell the correct number
+                    // give each dayCell the correct number and class specified to it
                     const dateNumber = document.createElement('span');
-                    dateNumber.className = 'date-number';
+                    dateNumber.classList.add('date-number');
                     dateNumber.textContent = dayCount;
                     dayCell.appendChild(dateNumber);
 

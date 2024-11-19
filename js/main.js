@@ -23,16 +23,59 @@ class Day{
     updateDisplay(){
         if(this.element){
             const taskList = document.createElement('div');
-            taskList.classList.add('task-list');
+            taskList.classList.add('day-tasks');
             this.tasks.forEach(task => {
                 const taskEl = document.createElement('div');
                 taskEl.classList.add('task');
                 taskEl.textContent = task.title;
                 taskList.appendChild(taskEl);
-            })
+            });
+
+
+
+            const existing = this.element.querySelector('.day-tasks');
+// pretty sure i wont wana leave the removal in
+            // if(existing) existing.remove();
+
+            this.element.appendChild(taskList);
         }
     }
 
+}
+
+
+class Week{
+    construcotr(start){
+        this.startDate = start;
+        this.days = new Map();
+        this.tasks = new Map();
+        this.element = null;
+    }
+
+    addTask(task){
+        this.tasks.set(task.id, task);
+        this.updateDisplay();
+    }
+
+    updateDisplay(){
+        if(this.element){
+            const taskList = document.createElement('div');
+            taskList.classList.add('week-tasks');
+            this.tasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.classList.add('task');
+                taskEl.textContent = task.title;
+                taskList.appendChild(taskEl);
+            });
+
+            const existing = this.element.querySelector('.week-tasks');
+
+// same as days, pretty sure i dont want this here
+            // if(existing) existing.remove();
+
+            this.element.appendChild(taskList);
+        }
+    }
 }
 
 
@@ -43,8 +86,18 @@ class Calendar {
         this.currentDate = date;
         this.calGrid = document.querySelector('.calendar-grid');
         this.monthYearSpan = document.querySelector('.month-year');
+        this.weeks = new Map();
         this.setupNavigation();
         this.render();
+    }
+
+    getWeekKey(date) {
+        const week = Math.ceil(date.getDate() / 7);
+        return `${date.getFullYear()}-${date.getMonth()}-${week}`;
+    }
+
+    getDayKey(date){
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
     }
 
     setupNavigation() {

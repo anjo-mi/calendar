@@ -122,6 +122,41 @@ class Calendar {
         });
     }
 
+    listeners(){
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            day.addEventListener('click', () => {
+                const today = parseInt(day.getAttribute('day'),10);
+                const clickedDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), today);
+// make this a form later
+                const title = prompt('what you gota do?')
+                if (!title) return;
+// this too
+                let description;
+                description = prompt('how you gona do it?') || 'seat of the pants';
+
+                const task = new Task(title, description);
+                this.addDayTask(clickedDay, task);
+            });
+        });
+        document.querySelectorAll('.weekly-task-cell').forEach(week => {
+            week.addEventListener('click', () => {
+                const thisWeek = parseInt(week.getAttribute('week'),10);
+                const weekStart = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+                weekStart.setDate(weekStart.getDate() + (thisWeek * 7));
+
+// make this a form later
+                const title = prompt('what you gota do?');
+                if (!title) return;
+// this too
+                let description;
+                description = prompt('how you gona do it?') || 'seat of the pants';
+
+                const task = new Task(title, description);
+                this.addWeekTask(weekStart, task);
+            });
+        });
+    }
+
     render() {
         // takes current date or newly inputted date, sets the year and month
         const year = this.currentDate.getFullYear();
@@ -169,7 +204,8 @@ class Calendar {
 
             // create weekly task cells
             const weeklyTask = document.createElement('div');
-            weeklyTask.classList.add('weekly-task-cell', week);
+            weeklyTask.classList.add('weekly-task-cell');
+            weeklyTask.setAttribute('week', week);
             // add weekly tasks to each specific week
             weekObj.element = weeklyTask;
             weekObj.updateDisplay(); // update the display
@@ -180,12 +216,14 @@ class Calendar {
             // for each week, add 7 days
             for (let day = 0; day < 7; day++) {
                 const dayCell = document.createElement('div');
-                dayCell.classList.add('calendar-day', week, dayCount);
-
-
+                
+                
+                
                 // first week: only give days after month has started
                 // subsequent weeks: only show days before end of month
                 if ((week === 0 && day >= firstDay) || (week > 0 &&dayCount <= lastDate)) {
+                    dayCell.classList.add('calendar-day');
+                    dayCell.setAttribute('day', dayCount);
                     // create a new date for each day
                     const currentDay = new Date(year,month, dayCount);
                     // get the key of each day
@@ -217,6 +255,7 @@ class Calendar {
                 this.calGrid.appendChild(dayCell);
             }
         }
+        this.listeners();
     }
 
     addDayTask(date, task){

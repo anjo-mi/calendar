@@ -44,7 +44,7 @@ class Day{
 
 
 class Week{
-    construcotr(start){
+    constructor(start){
         this.startDate = start;
         this.days = new Map();
         this.tasks = new Map();
@@ -171,8 +171,8 @@ class Calendar {
                     if(!weekObj.days.has(dayKey)){
                         weekObj.days.set(dayKey, new Day(currentDay));
 
-                        const dayObj = weekObj.days.get(dayKey);
                     }
+                    const dayObj = weekObj.days.get(dayKey);
 
 
                     const dateNumber = document.createElement('span');

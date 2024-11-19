@@ -34,8 +34,7 @@ class Day{
 
 
             const existing = this.element.querySelector('.day-tasks');
-// pretty sure i wont wana leave the removal in
-            // if(existing) existing.remove();
+            if(existing) existing.remove();
 
             this.element.appendChild(taskList);
         }
@@ -69,9 +68,7 @@ class Week{
             });
 
             const existing = this.element.querySelector('.week-tasks');
-
-// same as days, pretty sure i dont want this here
-            // if(existing) existing.remove();
+            if(existing) existing.remove();
 
             this.element.appendChild(taskList);
         }
@@ -139,25 +136,53 @@ class Calendar {
         
         const totalWeeks = Math.ceil((firstDay + lastDate) / 7);
         
-        this.calGrid.style.gridTemplateRows = `auto repeat(${totalWeeks}, minmax(2rem, 1fr))`
+// dont forget, remember to place back in if grid is misaligned
+        // this.calGrid.style.gridTemplateRows = `auto repeat(${totalWeeks}, minmax(2rem, 1fr))`
 
         for (let week = 0; week < totalWeeks; week++) {
-            // Add weekly task cell
-            const weeklyTask = document.createElement('div');
-            weeklyTask.className = 'weekly-task-cell';
-            weeklyTask.textContent = `Week ${week + 1}`;
-            this.calGrid.appendChild(weeklyTask);
+            const weekStart = new Date(year, month, (week * 7) + 1 - firstDay);
+            const weekKey = this.getWeekKey(weekStart);
 
+            // create and/or retrieve week
+            if (!this.weeks.has(weekKey)){
+                this.weeks.set(weekKey, new Week(weekStart));
+            }
+            const weekObj = this.weeks.get(weekKey);
+            
+
+            // create weekly task cells
+            const weeklyTask = document.createElement('div');
+            weeklyTask.classList.add('weekly-task-cell');
+            weekObj.element = weeklyTask;
+            weekObj.updateDisplay();
+            this.calGrid.appendChild(weeklyTask);
+            
+            
             // Add days
             for (let day = 0; day < 7; day++) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'calendar-day';
 
                 if ((week === 0 && day >= firstDay) || (week > 0 &&dayCount <= lastDate)) {
+                    const currentDay = new Date(year,month, dayCount);
+                    const dayKey = this.getDayKey(currentDay);
+
+                    // create and/or retrieve days
+                    if(!weekObj.days.has(dayKey)){
+                        weekObj.days.set(dayKey, new Day(currentDay));
+
+                        const dayObj = weekObj.days.get(dayKey);
+                    }
+
+
                     const dateNumber = document.createElement('span');
                     dateNumber.className = 'date-number';
                     dateNumber.textContent = dayCount;
                     dayCell.appendChild(dateNumber);
+
+                    dayObj.element = dayCell;
+                    dayObj.updateDisplay();
+
                     dayCount++;
                 }
 
@@ -165,6 +190,23 @@ class Calendar {
             }
         }
     }
+
+    addDayTask(date, task){
+        const dayKey = this.getDayKey(date);
+        const weekKey = this.getWeekKey(date);
+        const week = this.weeks.get(weekKey);
+
+        if (week && week.days.has(dayKey)){
+            week.days.get(dayKey).addTask(task);
+        }
+    }
+
+    addWeekTask(date, task){
+        const weekKey = this.getWeekKey(date);
+        const week = this.weeks.get(weekKey);
+        if (week) week.addTask(task);
+    }
+
 
     createHeader(text) {
         const header = document.createElement('div');

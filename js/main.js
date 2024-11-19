@@ -1,3 +1,43 @@
+class Task{
+    constructor(title, description){
+        this.id = crypto.randomUUID();
+        this.title = title;
+        this.description = description;
+        this.created = new Date();
+    }
+}
+
+
+class Day{
+    constructor(date){
+        this.date = date;
+        this.tasks = new Map();
+        this.element = null;
+    }
+
+    addTask(task){
+        this.tasks.set(task.id, task);
+        this.updateDisplay();
+    }
+
+    updateDisplay(){
+        if(this.element){
+            const taskList = document.createElement('div');
+            taskList.classList.add('task-list');
+            this.tasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.classList.add('task');
+                taskEl.textContent = task.title;
+                taskList.appendChild(taskEl);
+            })
+        }
+    }
+
+}
+
+
+
+
 class Calendar {
     constructor(date = new Date()) {
         this.currentDate = date;

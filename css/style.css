@@ -44,6 +44,7 @@ body {
     padding: 1rem;
     text-align: center;
     font-weight: bold;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,6 +76,14 @@ body {
     right: 0.5rem;
 }
 
+.task {
+    font-size: .8rem;
+} 
+
+.date-number {
+    font: .8rem bolder;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .calendar-grid {
@@ -84,5 +93,14 @@ body {
     .task-column,
     .day-header {
         padding: 0.5rem;
+        font-size: .8rem;
+    }
+
+    .task {
+        font-size: .6rem;
+    } 
+
+    .date-number {
+    font: .4rem bolder;
     }
 }

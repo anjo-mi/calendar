@@ -133,7 +133,6 @@ class Calendar {
 // this too
                 let description;
                 description = prompt('how you gona do it?') || 'seat of the pants';
-
                 const task = new Task(title, description);
                 this.addDayTask(clickedDay, task);
             });

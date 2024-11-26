@@ -151,19 +151,60 @@ class Calendar {
         });
     }
 
+    setupModal(){
+        this.modal = document.getElementById('taskModal');
+        this.taskForm = document.getElementById('taskForm');
+        this.cancelButton = document.getElementById('cancelTask');
+        this.currentCallback = null;
+
+        this.taskForm.addEventListener('submit', e =>{
+            e.preventDefault();
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value || 'seat of the pants';
+
+            if (this.currentCallback){
+                this.currentCallback(title, description);
+            }
+            this.hideModal();
+        });
+
+        // cancel button functionality
+        this.cancelButton.addEventListener('click', () => this.hideModal());
+
+        // close modal when clicking outside
+        this.modal.addEventListener('click', e => {
+            if (e.target === this.modal) this.hideModal();
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') this.hideModal();
+        })
+    }
+
+    showModal(callback){
+        this.currentCallback = callback;
+        this.modal.style.display = 'flex';
+        this.taskForm.reset();
+    }
+
+    hideModal(){
+        this.modal.style.display = 'none';
+        this.currentCallback = null;
+    }
+
+
     listeners(){
+        if (!this.modal) this.setupModal();
+
         document.querySelectorAll('.calendar-day').forEach(day => {
             day.addEventListener('click', () => {
                 const today = parseInt(day.getAttribute('day'),10);
                 const clickedDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), today);
-// make this a form later
-                const title = prompt('what you gota do?')
-                if (!title) return;
-// this too
-                let description;
-                description = prompt('how you gona do it?') || 'seat of the pants';
-                const task = new Task(title, description);
-                this.addDayTask(clickedDay, task);
+
+                this.showModal((title, description) => {
+                   const task = new Task(title, description);
+                   this.addDayTask(clickedDay, task); 
+                });
             });
         });
         document.querySelectorAll('.weekly-task-cell').forEach(week => {
@@ -172,15 +213,10 @@ class Calendar {
                 const weekStart = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
                 weekStart.setDate(weekStart.getDate() + (thisWeek * 7));
 
-// make this a form later
-                const title = prompt('what you gota do?');
-                if (!title) return;
-// this too
-                let description;
-                description = prompt('how you gona do it?') || 'seat of the pants';
-
-                const task = new Task(title, description);
-                this.addWeekTask(weekStart, task);
+                this.showModal((title, description) => {
+                    const task = new Task(title, description);
+                    this.addWeekTask(weekStart, task);
+                });
             });
         });
     }

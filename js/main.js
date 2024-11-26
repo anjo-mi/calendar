@@ -49,6 +49,11 @@ class Day{
             // append the newly updated task list to the day
             this.element.appendChild(taskList);
         }
+/*************  ✨ Codeium Command 🌟  *************/
+        if (this.element){
+            this.element.style.backgroundColor = this.tasks.size > 0 ? RED : BLUE;
+/******  ba43c6f7-2e11-488e-aa4e-b0dbfe85c068  *******/
+        }
     }
 
 }
@@ -99,10 +104,8 @@ class Week{
             }
             // change the background of each day in the week
             this.days.forEach(day => {
-                if(this.tasks.size > 0){
+                if(this.tasks.size > 0 && day.element.style.backgroundColor !== RED){
                     day.element.style.backgroundColor = YELLOW;
-                } else {
-                    day.element.style.backgroundColor = BLUE;
                 }
             });
         }

@@ -49,10 +49,10 @@ class Day{
             // append the newly updated task list to the day
             this.element.appendChild(taskList);
         }
-/*************  ✨ Codeium Command 🌟  *************/
+
+// TODO: daily elements revert to blue if the day has no tasks, even if the week does
         if (this.element){
             this.element.style.backgroundColor = this.tasks.size > 0 ? RED : BLUE;
-/******  ba43c6f7-2e11-488e-aa4e-b0dbfe85c068  *******/
         }
     }
 

@@ -1,3 +1,11 @@
+const YELLOW = 'rgba(255, 255, 0, 0.4)';
+const GREEN = 'rgba(0, 255, 0, 0.4)';
+const RED = 'rgba(255, 0, 0, 0.4)';
+const BLUE = 'rgba(0, 0, 255, 0.4)';
+
+
+
+
 class Task{
     constructor(title, description){
         this.id = crypto.randomUUID(); //make a radndom id
@@ -62,22 +70,7 @@ class Week{
     // same as day
     updateDisplay(){
         // check that the week is assigned to a DOM element (from Calendar.render())
-        if(this.element){
-            // if there are tasks in the week, switch the background color of the week
-            if(this.tasks.size > 0){
-                this.element.style.backgroundColor = 'rgba(255, 255, 0, 0.4)'; // semi transparent yellow
-            } else {
-                this.element.style.backgroundColor = 'white'; // reset background
-            }
-            // change the background of each day in the week
-            this.days.forEach(day => {
-                if(this.tasks.size > 0){
-                    day.element.style.backgroundColor = 'rgba(255, 255, 0, 0.4)';
-                } else {
-                    day.element.style.backgroundColor = 'white';
-                }
-            });
-        }
+
         // check that the week is assigned to a DOM element (from Calendar.render())
         if(this.element){
             // create task list for the tasks 
@@ -96,6 +89,22 @@ class Week{
             if(existing) existing.remove();
             // append the newly updated task list to the week
             this.element.appendChild(taskList);
+        }
+        if(this.element){
+            // if there are tasks in the week, switch the background color of the week
+            if(this.tasks.size > 0){
+                this.element.style.backgroundColor = YELLOW; // semi transparent yellow
+            } else {
+                this.element.style.backgroundColor = 'white'; // reset background
+            }
+            // change the background of each day in the week
+            this.days.forEach(day => {
+                if(this.tasks.size > 0){
+                    day.element.style.backgroundColor = YELLOW;
+                } else {
+                    day.element.style.backgroundColor = BLUE;
+                }
+            });
         }
     }
 }
@@ -156,7 +165,7 @@ class Calendar {
         });
         document.querySelectorAll('.weekly-task-cell').forEach(week => {
             week.addEventListener('click', () => {
-                const thisWeek = parseInt(week.getAttribute('week'),10);
+                const thisWeek = parseInt(week.getAttribute('week'),10) -1;
                 const weekStart = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
                 weekStart.setDate(weekStart.getDate() + (thisWeek * 7));
 

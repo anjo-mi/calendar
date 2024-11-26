@@ -63,6 +63,23 @@ class Week{
     updateDisplay(){
         // check that the week is assigned to a DOM element (from Calendar.render())
         if(this.element){
+            // if there are tasks in the week, switch the background color of the week
+            if(this.tasks.size > 0){
+                this.element.style.backgroundColor = 'rgba(255, 255, 0, 0.4)'; // semi transparent yellow
+            } else {
+                this.element.style.backgroundColor = 'white'; // reset background
+            }
+            // change the background of each day in the week
+            this.days.forEach(day => {
+                if(this.tasks.size > 0){
+                    day.element.style.backgroundColor = 'rgba(255, 255, 0, 0.4)';
+                } else {
+                    day.element.style.backgroundColor = 'white';
+                }
+            });
+        }
+        // check that the week is assigned to a DOM element (from Calendar.render())
+        if(this.element){
             // create task list for the tasks 
             const taskList = document.createElement('div');
             taskList.classList.add('week-tasks');

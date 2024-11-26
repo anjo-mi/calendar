@@ -155,12 +155,29 @@ class Calendar {
         this.modal = document.getElementById('taskModal');
         this.taskForm = document.getElementById('taskForm');
         this.cancelButton = document.getElementById('cancelTask');
+        this.titleInput = document.getElementById('taskTitle');
+        this.descInput = document.getElementById('taskDescription');
         this.currentCallback = null;
+
+
+        // keydown handlers for modal inputs
+        [this.titleInput, this.descInput].forEach(input => {
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    const submitEvent = new Event('submit', {
+                        cancelable: true,
+                        bubbles: true
+                    });
+                    this.taskForm.dispatchEvent(submitEvent);
+                };
+            })
+        })
 
         this.taskForm.addEventListener('submit', e =>{
             e.preventDefault();
-            const title = document.getElementById('taskTitle').value;
-            const description = document.getElementById('taskDescription').value || 'seat of the pants';
+            const title = this.titleInput.value;
+            const description = this.descInput.value || 'seat of the pants';
 
             if (this.currentCallback){
                 this.currentCallback(title, description);

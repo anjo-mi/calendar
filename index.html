@@ -37,6 +37,53 @@
             </form>
         </div>
     </div>
+
+    <div class="modal-overlay" id="dayViewModal">
+        <div class="modal">
+            <h2 id="dayViewDate"></h2>
+            <p>Date: <span id="dayViewDateSpan"></span></p>
+            <p>Week <span id="dayViewWeekNum"></span>: <span id="dayViewWeekSpan"></span></p>
+            
+            <div class="task-view-section">
+                <h3>Daily Tasks</h3>
+                <div id="dayViewDailyTasks" class="task-view-list"></div>
+                <button type="button" id="clearDayDailyTasks" class="clear-button">Clear Selected</button>
+            </div>
+            
+            <div class="task-view-section">
+                <h3>Weekly Tasks</h3>
+                <div id="dayViewWeeklyTasks" class="task-view-list"></div>
+                <button type="button" id="clearDayWeeklyTasks" class="clear-button">Clear Selected</button>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" id="closeDayView">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="weekViewModal">
+        <div class="modal">
+            <h2>Week <span id="weekViewNum"></span></h2>
+            <p id="weekViewSpan"></p>
+            
+            <div class="task-view-section">
+                <h3>Weekly Tasks</h3>
+                <div id="weekViewWeeklyTasks" class="task-view-list"></div>
+                <button type="button" id="clearWeekWeeklyTasks" class="clear-button">Clear Selected</button>
+            </div>
+            
+            <div class="task-view-section">
+                <h3>Daily Tasks</h3>
+                <div id="weekViewDailyTasks" class="task-view-list"></div>
+                <button type="button" id="clearWeekDailyTasks" class="clear-button">Clear Selected</button>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" id="closeWeekView">Close</button>
+            </div>
+        </div>
+    </div>
                
     <script src="js/main.js"></script>
 </body>

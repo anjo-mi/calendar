@@ -112,7 +112,7 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -159,4 +159,61 @@ body {
 
 .modal button[type="button"] {
     background: #f1f1f1;
+}
+
+
+.task-view-section {
+    margin: 1.5rem 0;
+}
+
+.task-view-section h3 {
+    margin-bottom: 1rem;
+}
+
+.task-view-list {
+    max-height: 20vh;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.task-view-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: #f1f1f1;
+    margin-bottom: 0.5rem;
+    border-radius: 0.4rem;
+}
+
+.task-view-content {
+    flex: 1;
+}
+
+.task-view-title {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+}
+
+.task-view-description {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.clear-button {
+    background: #ff4444;
+    color: black;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.clear-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+#weekViewModal{
+    display: none;
 }

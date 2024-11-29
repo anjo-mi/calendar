@@ -209,6 +209,47 @@ class Calendar {
         this.currentCallback = null;
     }
 
+    showDayView(date){
+        const dayViewModal = document.getElementById('dayViewModal');
+        const dayViewDate = document.getElementById('dayViewDate');
+        const dayViewDateSpan = document.getElementById('dayViewDateSpan');
+        const dayViewWeekNum = document.getElementById('dayViewWeekNum');
+        const dayViewWeekSpan = document.getElementById('dayViewWeekSpan');
+        const dayViewDailyTasks = document.getElementById('dayViewDailyTasks');
+        const dayViewWeeklyTasks = document.getElementById('dayViewWeeklyTasks');
+        const closeDayView = document.getElementById('closeDayView');
+
+        // format for date display
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = date.toLocaleString(undefined, options);
+
+        // get week #
+        const weekKey = this.getWeekKey(date);
+        const weekNum = parseInt(weekKey.split('-')[2], 10);
+
+        // get tasks
+        const dayKey = this.getDayKey(date);
+        const week = this.weeks.get(weekKey);
+
+        // update modal content
+        dayViewDate.textContent = dateStr;
+        dayViewDateSpan.textContent = dateStr;
+        dayViewWeekNum.textContent = weekNum;
+        dayViewWeekSpan.textContent = `${date.toLocaleDateString(undefined, { month: 'long' })} Week ${weekNum}`;
+
+        // clear previous
+        dayViewDailyTasks.innerHTML = '';
+        dayViewWeeklyTasks.innerHTML = '';
+
+        // add tasks
+        if (week && week.days.has(dayKey)){
+            const day = week.days.get(dayKey);
+            day.tasks.forEach(task => {
+                
+            });
+        }
+    }
+
 
     listeners(){
         if (!this.modal) this.setupModal();

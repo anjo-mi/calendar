@@ -122,6 +122,8 @@ class Calendar {
         this.monthYearSpan = document.querySelector('.month-year'); // get the physical location for the month and year
         this.weeks = new Map(); // create an obj map for the weeks of the month
         this.setupNavigation(); // allow next/prev buttons
+        this.setupModal();
+        this.setupModalButtons();
         this.render(); // render actual days of month
     }
 
@@ -198,6 +200,57 @@ class Calendar {
         })
     }
 
+    setupModalButtons(){
+        const addDailyTaskBtn = document.getElementById('addDailyTask');
+        const weekTaskFromDayBtn = document.getElementById('weekTaskFromDay');
+        const addWeeklyTaskBtn = document.getElementById('addWeeklyTask');
+
+        this.currentViewDate = null;
+
+        addDailyTaskBtn.addEventListener('click', () => {
+            // hide the day view modal
+            document.getElementById('dayViewModal').style.display = 'none';
+
+            // show the add-task modal
+            this.showModal((title,description) => {
+                const task = new Task(title, description);
+                this.addDayTask(this.currentViewDate, task);
+
+                this.showDayView(this.currentViewDate);
+            });
+        });
+
+        weekTaskFromDayBtn.addEventListener('click', () => {
+            // hide the day view modal
+            document.getElementById('dayViewModal').style.display = 'none';
+
+            // get start of week from current day
+            const weekStart = new Date(this.currentViewDate);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay() + (weekStart.getDay() === 0 ? -6 : 1));
+            // show the add-weekly-task modal
+            this.showModal((title,description) => {
+                const task = new Task(title, description);
+                this.addWeekTask(weekStart, task);
+                
+                // update day view and show it again
+                this.showDayView(this.currentViewDate);
+            });
+        });
+
+
+        addWeeklyTaskBtn.addEventListener('click', () => {
+            // hide the week view modal
+            document.getElementById('weekViewModal').style.display = 'none';
+
+            this.showModal((title,description) => {
+                const task = new Task(title, description);
+                this.addWeekTask(this.currentViewDate, task);
+                // update week-view and show it again
+                this.showWeekView(this.currentViewDate);
+            })
+        });
+    }
+
     showModal(callback){
         this.currentCallback = callback;
         this.modal.style.display = 'flex';
@@ -218,6 +271,7 @@ class Calendar {
         const dayViewDailyTasks = document.getElementById('dayViewDailyTasks');
         const dayViewWeeklyTasks = document.getElementById('dayViewWeeklyTasks');
         const closeDayView = document.getElementById('closeDayView');
+        this.currentViewDate = date;
 
         // format for date display
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -289,6 +343,7 @@ class Calendar {
         const weekViewWeeklyTasks = document.getElementById('weekViewWeeklyTasks');
         const weekViewDailyTasks = document.getElementById('weekViewDailyTasks');
         const closeWeekView = document.getElementById('closeWeekView');
+        this.currentViewDate = weekStart;
 
         // get week info
         const weekKey = this.getWeekKey(weekStart);
@@ -359,7 +414,6 @@ class Calendar {
 
         document.querySelectorAll('.weekly-task-cell').forEach(week => {
             week.addEventListener('click', () => {
-// TODO: check the minus 1
                 const thisWeek = parseInt(week.getAttribute('week'),10);
                 
                 const firstOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
@@ -376,33 +430,6 @@ class Calendar {
             });
         })
 
-
-// USE FOR ADD TASKS BUTTON INSIDE DAY/WEEK MODALS
-        // if (!this.modal) this.setupModal();
-
-        // document.querySelectorAll('.calendar-day').forEach(day => {
-        //     day.addEventListener('click', () => {
-        //         const today = parseInt(day.getAttribute('day'),10);
-        //         const clickedDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), today);
-
-        //         this.showModal((title, description) => {
-        //            const task = new Task(title, description);
-        //            this.addDayTask(clickedDay, task); 
-        //         });
-        //     });
-        // });
-        // document.querySelectorAll('.weekly-task-cell').forEach(week => {
-        //     week.addEventListener('click', () => {
-        //         const thisWeek = parseInt(week.getAttribute('week'),10) -1;
-        //         const weekStart = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-        //         weekStart.setDate(weekStart.getDate() + (thisWeek * 7));
-
-        //         this.showModal((title, description) => {
-        //             const task = new Task(title, description);
-        //             this.addWeekTask(weekStart, task);
-        //         });
-        //     });
-        // });
     }
 
     render() {

@@ -270,6 +270,11 @@ class Calendar {
         // close button handler
         closeDayView.onclick = () => dayViewModal.style.display = 'none';
 
+        // escape key handler
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') dayViewModal.style.display = 'none';
+        });
+
         // close on escape
         dayViewModal.onclick = (e) => {
             if (e.target === dayViewModal) dayViewModal.style.display = 'none';
@@ -331,6 +336,11 @@ class Calendar {
         // close button handler
         closeWeekView.onclick = () => weekViewModal.style.display = 'none';
 
+        // escape key handler
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') weekViewModal.style.display = 'none';
+        });
+
         // close on escape
         weekViewModal.onclick = (e) => {
             if (e.target === weekViewModal) weekViewModal.style.display = 'none';
@@ -351,8 +361,17 @@ class Calendar {
             week.addEventListener('click', () => {
 // TODO: check the minus 1
                 const thisWeek = parseInt(week.getAttribute('week'),10);
-                const weekStart = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-                weekStart.setDate(weekStart.getDate() + (thisWeek * 7));
+                
+                const firstOfMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+                let firstsDayPosition = firstOfMonth.getDay();
+                firstsDayPosition = firstsDayPosition === 0 ? 6 : firstsDayPosition - 1;
+
+                const firstWeekStart = new Date(firstOfMonth);
+                firstWeekStart.setDate(1 - firstsDayPosition);
+
+                const weekStart = new Date(firstWeekStart);
+                weekStart.setDate(firstWeekStart.getDate() + (thisWeek * 7));
+
                 this.showWeekView(weekStart);
             });
         })

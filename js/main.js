@@ -241,42 +241,149 @@ class Calendar {
         dayViewDailyTasks.innerHTML = '';
         dayViewWeeklyTasks.innerHTML = '';
 
-        // add tasks
+        // add daily tasks
         if (week && week.days.has(dayKey)){
             const day = week.days.get(dayKey);
             day.tasks.forEach(task => {
-                
+                const taskEl = document.createElement('div');
+                taskEl.classList.add('task-item');
+// TODO??? add description box
+                taskEl.textContent = task.title;
+                dayViewDailyTasks.appendChild(taskEl);
             });
+        }
+
+        // add weekly tasks
+        if (week){
+            week.tasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.classList.add('task-item');
+// TODO??? add description box
+                taskEl.textContent = task.title;
+                dayViewWeeklyTasks.appendChild(taskEl);
+            });
+        }
+
+        // show modal
+        dayViewModal.style.display = 'flex';
+
+        // close button handler
+        closeDayView.onclick = () => dayViewModal.style.display = 'none';
+
+        // close on escape
+        dayViewModal.onclick = (e) => {
+            if (e.target === dayViewModal) dayViewModal.style.display = 'none';
+        }
+    }
+
+
+    showWeekView(weekStart){
+        const weekViewModal = document.getElementById('weekViewModal');
+        const weekViewNum = document.getElementById('weekViewNum');
+        const weekViewSpan = document.getElementById('weekViewSpan');
+        const weekViewWeeklyTasks = document.getElementById('weekViewWeeklyTasks');
+        const weekViewDailyTasks = document.getElementById('weekViewDailyTasks');
+        const closeWeekView = document.getElementById('closeWeekView');
+
+        // get week info
+        const weekKey = this.getWeekKey(weekStart);
+        const weekNum = parseInt(weekKey.split('-')[2], 10);
+        const week = this.weeks.get(weekKey);
+
+        // calculate week date range
+        const weekEnd = new Date(weekStart)
+        weekEnd.setDate(weekStart.getDate() + 6);
+        const dateRangeStr = `${weekStart.toLocaleDateString()} ${weekEnd.toLocaleDateString()}`;
+
+        // update modal content
+        weekViewNum.textContent = weekNum;
+        weekViewSpan.textContent = dateRangeStr;
+
+        // clear previous
+        weekViewWeeklyTasks.innerHTML = '';
+        weekViewDailyTasks.innerHTML = '';
+
+        // add weekly tasks
+        if (week){
+            week.tasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.classList.add('task-item');
+// TODO??? add description box
+                taskEl.textContent = task.title;
+                weekViewWeeklyTasks.appendChild(taskEl);
+            });
+
+            // add daily tasks
+            week.days.forEach(day => {
+                day.tasks.forEach(task => {
+                    const taskEl = document.createElement('div');
+                    taskEl.classList.add('task-item');
+// TODO??? add description box
+                    taskEl.textContent = `${day.date.toLocaleDateString()}: ${task.title}`;
+                    weekViewDailyTasks.appendChild(taskEl);
+                });
+            });
+        }
+
+        // show modal
+        weekViewModal.style.display = 'flex';
+
+        // close button handler
+        closeWeekView.onclick = () => weekViewModal.style.display = 'none';
+
+        // close on escape
+        weekViewModal.onclick = (e) => {
+            if (e.target === weekViewModal) weekViewModal.style.display = 'none';
         }
     }
 
 
     listeners(){
-        if (!this.modal) this.setupModal();
-
         document.querySelectorAll('.calendar-day').forEach(day => {
             day.addEventListener('click', () => {
                 const today = parseInt(day.getAttribute('day'),10);
                 const clickedDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), today);
-
-                this.showModal((title, description) => {
-                   const task = new Task(title, description);
-                   this.addDayTask(clickedDay, task); 
-                });
+                this.showDayView(clickedDay);
             });
         });
+
         document.querySelectorAll('.weekly-task-cell').forEach(week => {
             week.addEventListener('click', () => {
-                const thisWeek = parseInt(week.getAttribute('week'),10) -1;
+// TODO: check the minus 1
+                const thisWeek = parseInt(week.getAttribute('week'),10);
                 const weekStart = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
                 weekStart.setDate(weekStart.getDate() + (thisWeek * 7));
-
-                this.showModal((title, description) => {
-                    const task = new Task(title, description);
-                    this.addWeekTask(weekStart, task);
-                });
+                this.showWeekView(weekStart);
             });
-        });
+        })
+
+
+// USE FOR ADD TASKS BUTTON INSIDE DAY/WEEK MODALS
+        // if (!this.modal) this.setupModal();
+
+        // document.querySelectorAll('.calendar-day').forEach(day => {
+        //     day.addEventListener('click', () => {
+        //         const today = parseInt(day.getAttribute('day'),10);
+        //         const clickedDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), today);
+
+        //         this.showModal((title, description) => {
+        //            const task = new Task(title, description);
+        //            this.addDayTask(clickedDay, task); 
+        //         });
+        //     });
+        // });
+        // document.querySelectorAll('.weekly-task-cell').forEach(week => {
+        //     week.addEventListener('click', () => {
+        //         const thisWeek = parseInt(week.getAttribute('week'),10) -1;
+        //         const weekStart = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+        //         weekStart.setDate(weekStart.getDate() + (thisWeek * 7));
+
+        //         this.showModal((title, description) => {
+        //             const task = new Task(title, description);
+        //             this.addWeekTask(weekStart, task);
+        //         });
+        //     });
+        // });
     }
 
     render() {

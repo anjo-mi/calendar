@@ -514,7 +514,6 @@ class Calendar {
             weeklyTask.setAttribute('week', week);
             // add weekly tasks to each specific week
             weekObj.element = weeklyTask;
-            // weekObj.updateDisplay(); // update the display
             // put the weekly tasks on the grid
             this.calGrid.appendChild(weeklyTask);
             

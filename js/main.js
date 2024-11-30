@@ -59,6 +59,12 @@ class Day{
         }
     }
 
+    updateBackgroundColor(color){
+        if (this.element && !this.tasks.size){
+            this.element.style.backgroundColor = color
+        }
+    }
+
 }
 
 
@@ -95,29 +101,22 @@ class Week{
             if(existing) existing.remove();
             // append the newly updated task list to the week
             this.element.appendChild(taskList);
-        }
-        if(this.tasks.size > 0){
-            this.element.style.backgroundColor = YELLOW;
-            this.days.forEach(day => {
-                if (day.element){
-                    if (day.tasks.size > 0){
-                        day.element.style.backgroundColor = RED;
-                    }else{
-                        day.element.style.backgroundColor = YELLOW;
+        
+            this.element.style.backgroundColor = this.tasks.size > 0 ? YELLOW : 'white';
+
+            if (this.tasks.size > 0){
+                this.days.forEach(day => {
+                    if (!day.tasks.size){
+                        day.updateBackgroundColor(YELLOW)
                     }
-                }
-            });
-        }else{
-            this.element.style.backgroundColor = 'white'
-            this.days.forEach(day => {
-                if (day.element){
-                    if (day.tasks.size > 0){
-                        day.element.style.backgroundColor = RED;
-                    }else{
-                        day.element.style.backgroundColor = BLUE;
+                })
+            }else{
+                this.days.forEach(day => {
+                    if (!day.tasks.size){
+                        day.updateBackgroundColor(BLUE)
                     }
-                }
-            });
+                });
+            }
         }
     }
 }
@@ -244,18 +243,21 @@ class Calendar {
             // get start of week from current day
             const weekStart = new Date(this.currentViewDate);
             weekStart.setDate(weekStart.getDate() - weekStart.getDay() + (weekStart.getDay() === 0 ? -6 : 1));
-            // show the add-weekly-task modal
+
             this.showModal((title,description) => {
                 const task = new Task(title, description);
-                this.addWeekTask(weekStart, task);
+                const weekKey = this.getWeekKey(weekStart);
+                const week = this.weeks.get(weekKey);
 
-                this.render();
+                if (week){
+                    week.addTask(task);
+                    week.updateDisplay();
+                }
+
                 const viewDate = new Date(this.currentViewDate);
-
-                
-                // update day view and show it again
-                this.showDayView(viewDate);
-            });
+                this.render();
+                this.showWeekView(viewDate);
+            })
         });
 
 
@@ -265,7 +267,14 @@ class Calendar {
 
             this.showModal((title,description) => {
                 const task = new Task(title, description);
-                this.addWeekTask(this.currentViewDate, task);
+                const weekKey = this.getWeekKey(this.currentViewDate);
+                const week = this.weeks.get(weekKey);
+
+                if (week){
+                    week.addTask(task);
+                    week.updateDisplay();
+                }
+
                 // update week-view and show it again
                 this.render();
                 this.showWeekView(this.currentViewDate);
@@ -505,7 +514,7 @@ class Calendar {
             weeklyTask.setAttribute('week', week);
             // add weekly tasks to each specific week
             weekObj.element = weeklyTask;
-            weekObj.updateDisplay(); // update the display
+            // weekObj.updateDisplay(); // update the display
             // put the weekly tasks on the grid
             this.calGrid.appendChild(weeklyTask);
             
@@ -551,6 +560,7 @@ class Calendar {
                 // add the day cells to the grid
                 this.calGrid.appendChild(dayCell);
             }
+            weekObj.updateDisplay();
         }
         this.listeners();
     }

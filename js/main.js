@@ -48,11 +48,14 @@ class Day{
             if(existing) existing.remove();
             // append the newly updated task list to the day
             this.element.appendChild(taskList);
+
         }
 
 // TODO: daily elements revert to blue if the day has no tasks, even if the week does
-        if (this.element){
-            this.element.style.backgroundColor = this.tasks.size > 0 ? RED : BLUE;
+        if (this.tasks.size > 0){
+            this.element.style.backgroundColor = RED;
+        }else{
+            this.element.style.backgroundColor = BLUE
         }
     }
 
@@ -75,8 +78,6 @@ class Week{
     // same as day
     updateDisplay(){
         // check that the week is assigned to a DOM element (from Calendar.render())
-
-        // check that the week is assigned to a DOM element (from Calendar.render())
         if(this.element){
             // create task list for the tasks 
             const taskList = document.createElement('div');
@@ -95,17 +96,26 @@ class Week{
             // append the newly updated task list to the week
             this.element.appendChild(taskList);
         }
-        if(this.element){
-            // if there are tasks in the week, switch the background color of the week
-            if(this.tasks.size > 0){
-                this.element.style.backgroundColor = YELLOW; // semi transparent yellow
-            } else {
-                this.element.style.backgroundColor = 'white'; // reset background
-            }
-            // change the background of each day in the week
+        if(this.tasks.size > 0){
+            this.element.style.backgroundColor = YELLOW;
             this.days.forEach(day => {
-                if(this.tasks.size > 0 && day.element.style.backgroundColor !== RED){
-                    day.element.style.backgroundColor = YELLOW;
+                if (day.element){
+                    if (day.tasks.size > 0){
+                        day.element.style.backgroundColor = RED;
+                    }else{
+                        day.element.style.backgroundColor = YELLOW;
+                    }
+                }
+            });
+        }else{
+            this.element.style.backgroundColor = 'white'
+            this.days.forEach(day => {
+                if (day.element){
+                    if (day.tasks.size > 0){
+                        day.element.style.backgroundColor = RED;
+                    }else{
+                        day.element.style.backgroundColor = BLUE;
+                    }
                 }
             });
         }
@@ -128,10 +138,17 @@ class Calendar {
     }
 
     getWeekKey(date) {
-        // week number, starting w min 1
-        const week = Math.ceil(date.getDate() / 7);
-        // return the date in yyyy-mm-week format
-        return `${date.getFullYear()}-${date.getMonth()}-${week}`;
+        // create new date to avoid fucking up inputs again
+
+        const tempDate = new Date(date);
+
+        // find monday from selected date
+        const day = tempDate.getDay();
+        const diff = tempDate.getDate() - day + (day === 0 ? -6 : 1);
+        tempDate.setDate(diff);
+
+        // return mondays date as week key
+        return `${tempDate.getFullYear()}-${tempDate.getMonth()}-${tempDate.getDate()}`
     }
 
     getDayKey(date){
@@ -215,7 +232,7 @@ class Calendar {
             this.showModal((title,description) => {
                 const task = new Task(title, description);
                 this.addDayTask(this.currentViewDate, task);
-
+                this.render();
                 this.showDayView(this.currentViewDate);
             });
         });
@@ -231,9 +248,13 @@ class Calendar {
             this.showModal((title,description) => {
                 const task = new Task(title, description);
                 this.addWeekTask(weekStart, task);
+
+                this.render();
+                const viewDate = new Date(this.currentViewDate);
+
                 
                 // update day view and show it again
-                this.showDayView(this.currentViewDate);
+                this.showDayView(viewDate);
             });
         });
 
@@ -246,6 +267,7 @@ class Calendar {
                 const task = new Task(title, description);
                 this.addWeekTask(this.currentViewDate, task);
                 // update week-view and show it again
+                this.render();
                 this.showWeekView(this.currentViewDate);
             })
         });
